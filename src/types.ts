@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type AgentStatus = "working" | "needs_input" | "done";
 export type TaskStatus = "completed" | "in_progress" | "pending";
 export type Pane = "agents" | "tasks" | "output";
@@ -13,5 +15,5 @@ export interface Agent {
   name: string;
   status: AgentStatus;
   tasks: Task[];
-  output: string[];
+  output: ReactNode;
 }

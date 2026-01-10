@@ -1,4 +1,4 @@
-import { Box, Text } from "ink";
+import { Box } from "ink";
 import type { Agent } from "../types.js";
 import { Hotkey } from "./Hotkey.js";
 
@@ -13,11 +13,7 @@ export function TerminalOutput({ agent }: TerminalOutputProps) {
         <Hotkey word="Output" hotkey="o" />
       </Box>
       <Box flexDirection="column" marginTop={1}>
-        {agent.output.map((line, index) => (
-          <Text key={index} dimColor={line.startsWith("$")}>
-            {line}
-          </Text>
-        ))}
+        {agent.output}
       </Box>
     </Box>
   );
