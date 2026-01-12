@@ -1,5 +1,5 @@
 export { Hotkey } from "./Hotkey.js";
-export { AgentStatusIndicator, TaskStatusIndicator } from "./StatusIndicator.js";
+export { AgentStatusIndicator, TaskStatusIndicator, AgentStatusCount } from "./StatusIndicator.js";
 export { AgentList } from "./AgentList.js";
 export { AgentOverview } from "./AgentOverview.js";
 export { TaskQueue } from "./TaskQueue.js";

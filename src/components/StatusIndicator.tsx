@@ -22,3 +22,14 @@ export function TaskStatusIndicator({ status }: { status: TaskStatus }) {
       return <Text color="gray">○</Text>;
   }
 }
+
+export function AgentStatusCount({ status, count }: { status: AgentStatus; count: number }) {
+  switch (status) {
+    case "working":
+      return <Text color="yellow" bold>● {count} Working</Text>;
+    case "needs_input":
+      return <Text color="red" bold>● {count} Waiting</Text>;
+    case "done":
+      return <Text color="green" bold>● {count} Done</Text>;
+  }
+}

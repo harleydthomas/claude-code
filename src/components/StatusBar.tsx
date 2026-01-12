@@ -1,44 +1,47 @@
 import { Box, Spacer, Text } from "ink";
 import { Hotkey } from "./Hotkey.js";
+import { UsageBar } from "./UsageBar.js";
+import { AgentStatusCount } from "./StatusIndicator.js";
+import type { Agent } from "../types.js";
+
+function AgentStatusSummary({ agents }: { agents: Agent[] }) {
+  const workingCount = agents.filter(a => a.status === "working").length;
+  const waitingCount = agents.filter(a => a.status === "needs_input").length;
+  const doneCount = agents.filter(a => a.status === "done").length;
+
+  return (
+    <Box gap={3}>
+      {waitingCount > 0 && <AgentStatusCount status="needs_input" count={waitingCount} />}
+      {workingCount > 0 && <AgentStatusCount status="working" count={workingCount} />}
+      {doneCount > 0 && <AgentStatusCount status="done" count={doneCount} />}
+    </Box>
+  );
+}
 
 interface StatusBarProps {
   mode: "main" | "agents";
+  agents?: Agent[];
 }
 
-export function StatusBar({ mode }: StatusBarProps) {
-  if (mode === "agents") {
-    return (
-      <Box paddingX={1} gap={2}>
+export function StatusBar({ mode, agents = [] }: StatusBarProps) {
+  switch (mode) {
+    case "agents": return (
+      <Box paddingX={2} gap={4}>
+        <Hotkey word="New Agent" hotkey="n" />
+        <AgentStatusSummary agents={agents} />
         <Spacer />
-        <Text dimColor>↑↓ Navigate</Text>
-        <Hotkey word="Close" hotkey="c" />
-        <Text dimColor>(^A)</Text>
-        <Hotkey word="Quit" hotkey="q" />
+        <UsageBar />
+      </Box>
+    );
+
+    case "main": return (
+      <Box paddingX={2} gap={2}>
+        <Text><Text color="magentaBright">⏵⏵ accept edits on</Text> (shift+tab to cycle)</Text>
+        <Spacer />
+        
+        <Box width={2} />
+        <Text color="blue">🤖 Refactor auth</Text>
       </Box>
     );
   }
-
-  return (
-    <Box paddingX={1} gap={2}>
-      <Spacer />
-      <Hotkey word="Usage" hotkey="u" />
-      <Text>
-        <Text color="#87c893">■</Text>
-        <Text color="#97c689">■</Text>
-        <Text color="#a9c47e">■</Text>
-        <Text color="#b9c276">■</Text>
-        <Text color="#cea966">■</Text>
-        <Text color="#d19260">■</Text>
-        <Text color="#d57b59">■</Text>
-        <Text color="#d86453">■</Text>
-        <Text color="#404040">■</Text>
-        <Text color="#404040">■</Text>
-        <Text color="#404040">■</Text>
-      </Text>
-      <Text>79%</Text>
-      <Box width={2} />
-      <Hotkey word="Quit" hotkey="q" />
-      <Hotkey word="/Commands" hotkey="/" />
-    </Box>
-  );
 }

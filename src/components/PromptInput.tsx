@@ -10,8 +10,8 @@ interface PromptInputProps {
 
 export function PromptInput({ value, onChange, onSubmit, isActive }: PromptInputProps) {
   return (
-    <Box paddingX={1}>
-      <Text color="cyan" bold>{">"} </Text>
+    <Box borderStyle="single" borderDimColor borderLeft={false} borderRight={false}>
+      <Text>{"❯"} </Text>
       <TextInput
         value={value}
         onChange={onChange}

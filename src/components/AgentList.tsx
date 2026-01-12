@@ -24,10 +24,6 @@ export function AgentList({ agents, selectedIndex }: AgentListProps) {
           </Box>
         ))}
       </Box>
-      <Spacer />
-      <Box marginBottom={-1}>
-        <Hotkey word="New Agent" hotkey="n" />
-      </Box>
     </Box>
   );
 }

@@ -51,17 +51,19 @@ export function App() {
   return (
     <Box flexDirection="column" width="100%" height="100%">
       <TerminalOutput agent={mockAgents[selectedIndex]} />
-      {showAgentOverview ? (
-        <AgentOverview agents={mockAgents} selectedIndex={selectedIndex} />
-      ) : (
-        <PromptInput
-          value={inputValue}
-          onChange={handleInputChange}
-          onSubmit={handleInputSubmit}
-          isActive={true}
-        />
-      )}
-      <StatusBar mode={showAgentOverview ? "agents" : "main"} />
+      <Box flexDirection="column">
+        { showAgentOverview ? (
+          <AgentOverview agents={mockAgents} selectedIndex={selectedIndex} />
+        ) : (
+          <PromptInput
+            value={inputValue}
+            onChange={handleInputChange}
+            onSubmit={handleInputSubmit}
+            isActive={true}
+          />
+        )}
+        <StatusBar mode={showAgentOverview ? "agents" : "main"} agents={mockAgents} />
+      </Box>
     </Box>
   );
 }
