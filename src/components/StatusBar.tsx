@@ -11,9 +11,9 @@ function AgentStatusSummary({ agents }: { agents: Agent[] }) {
 
   return (
     <Box gap={3}>
-      {waitingCount > 0 && <AgentStatusCount status="needs_input" count={waitingCount} />}
-      {workingCount > 0 && <AgentStatusCount status="working" count={workingCount} />}
-      {doneCount > 0 && <AgentStatusCount status="done" count={doneCount} />}
+      <AgentStatusCount status="needs_input" count={waitingCount} />
+      <AgentStatusCount status="working" count={workingCount} />
+      <AgentStatusCount status="done" count={doneCount} />
     </Box>
   );
 }
@@ -26,20 +26,19 @@ interface StatusBarProps {
 export function StatusBar({ mode, agents = [] }: StatusBarProps) {
   switch (mode) {
     case "agents": return (
-      <Box paddingX={2} gap={4}>
+      <Box paddingX={2} gap={2}>
         <Hotkey word="New Agent" hotkey="n" />
-        <AgentStatusSummary agents={agents} />
         <Spacer />
         <UsageBar />
       </Box>
     );
 
     case "main": return (
-      <Box paddingX={2} gap={2}>
+      <Box paddingX={2}>
         <Text><Text color="magentaBright">⏵⏵ accept edits on</Text> (shift+tab to cycle)</Text>
         <Spacer />
-        
-        <Box width={2} />
+        <AgentStatusSummary agents={agents} />
+        <Box width={4} />
         <Text color="blue">🤖 Refactor auth</Text>
       </Box>
     );

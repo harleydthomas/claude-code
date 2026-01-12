@@ -9,7 +9,7 @@ interface TaskQueueProps {
 
 export function TaskQueue({ agent }: TaskQueueProps) {
   return (
-    <Box flexDirection="column" paddingX={1}>
+    <Box flexDirection="column" padding={1}>
       <Box marginTop={-1}>
         <Hotkey word="Tasks" hotkey="t" />
       </Box>

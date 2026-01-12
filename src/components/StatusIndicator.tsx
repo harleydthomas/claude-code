@@ -26,10 +26,10 @@ export function TaskStatusIndicator({ status }: { status: TaskStatus }) {
 export function AgentStatusCount({ status, count }: { status: AgentStatus; count: number }) {
   switch (status) {
     case "working":
-      return <Text color="yellow" bold>● {count} Working</Text>;
+      return <Text><Text color="yellow" bold>● {count}</Text> Working</Text>;
     case "needs_input":
-      return <Text color="red" bold>● {count} Waiting</Text>;
+      return <Text><Text color="red" bold>● {count}</Text> Waiting</Text>;
     case "done":
-      return <Text color="green" bold>● {count} Done</Text>;
+      return <Text><Text color="green" bold>● {count}</Text> Done</Text>;
   }
 }
