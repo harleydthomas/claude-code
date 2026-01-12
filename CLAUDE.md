@@ -15,30 +15,40 @@ bun run src/index.tsx # Run the application
 
 ## Keyboard Shortcuts
 
+### Main View
+- **Ctrl+A** - Toggle AgentOverview panel
+- **q** - Quit
+- **Enter** - Submit prompt
+
+### AgentOverview
+- **Ctrl+A** - Close AgentOverview
+- **Escape** - Close AgentOverview
 - **↑/↓** - Navigate agent list
-- **a/t/o** - Focus Agents/Tasks/Output pane
-- **n** - New agent
 - **q** - Quit
 
 ## Architecture
 
-Three-pane terminal UI built with Ink (React for CLIs):
+Terminal UI built with Ink (React for CLIs). Main view shows terminal output with prompt input; Ctrl+A toggles the AgentOverview panel.
 
 ```
 src/
-├── index.tsx              # Entry point
+├── index.tsx              # Entry point with alternate screen buffer
 ├── App.tsx                # Main app with state & input handling
 ├── types.ts               # Type definitions
 ├── data/
-│   └── mockAgents.ts      # Mock agent data
+│   └── mockAgents.tsx     # Mock agent data with JSX output
 └── components/
     ├── index.ts           # Barrel export
+    ├── Code.tsx           # Syntax highlighting for code blocks
     ├── Hotkey.tsx         # Hotkey label with highlighted key
-    ├── StatusIndicator.tsx # Agent & Task status indicators
-    ├── TopBar.tsx         # Top bar with status and global hotkeys
-    ├── AgentList.tsx      # Left pane - agent list
-    ├── TaskQueue.tsx      # Center pane - task list
-    └── TerminalOutput.tsx # Right pane - terminal output
+    ├── StatusIndicator.tsx # Agent, Task & AgentStatusCount indicators
+    ├── StatusBar.tsx      # Bottom bar with context-specific content
+    ├── UsageBar.tsx       # Usage meter component
+    ├── PromptInput.tsx    # Text input with prompt prefix
+    ├── AgentOverview.tsx  # Two-column agent/task panel
+    ├── AgentList.tsx      # Agent list with status
+    ├── TaskQueue.tsx      # Task list for selected agent
+    └── TerminalOutput.tsx # Terminal output display
 ```
 
 ## UI Patterns
@@ -59,7 +69,7 @@ interface Agent {
   name: string;
   status: AgentStatus;
   tasks: Task[];
-  output: string[];
+  output: ReactNode;  // JSX elements for rich terminal output
 }
 ```
 
@@ -74,3 +84,23 @@ Task status:
 - ✓ completed (green)
 - ● in progress (yellow)
 - ○ pending (gray)
+
+## Code Syntax Highlighting
+
+The `Code` component uses regex-based tokenization for syntax highlighting with diff support:
+
+**Diff lines:**
+- Addition (`+`): line number and `+` in greenBright, code syntax highlighted
+- Deletion (`-`): line number and `-` in redBright, code in gray
+
+**Token colors:**
+| Token | Color | Examples |
+|-------|-------|----------|
+| keyword | magentaBright | `export`, `function`, `return`, `const` |
+| string | red | `"text"`, `'text'` |
+| literal | cyan | `true`, `false`, `null`, numbers |
+| element | yellow | `<Box>`, `<Text>` |
+| property | blue | `flexDirection=`, `color=` |
+| typeName | yellow | `AgentListProps`, `ReactNode` |
+| param | cyan | `agents`, `selectedIndex` |
+| comment | dim | `// comment` |
