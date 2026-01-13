@@ -1,6 +1,5 @@
 import { Box, Text } from "ink";
 import type { Agent } from "../types.js";
-import { Hotkey } from "./Hotkey.js";
 import { TaskStatusIndicator } from "./StatusIndicator.js";
 
 interface TaskQueueProps {
@@ -9,11 +8,11 @@ interface TaskQueueProps {
 
 export function TaskQueue({ agent }: TaskQueueProps) {
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box flexDirection="column" paddingX={1} flexGrow={1}>
       <Box marginTop={-1}>
-        <Hotkey word="Tasks" hotkey="t" />
+        <Text>Plan</Text>
       </Box>
-      <Box flexDirection="column" marginTop={1}>
+      <Box flexDirection="column" margin={1}>
         {agent.tasks.map((task) => (
           <Box key={task.id} gap={1}>
             <TaskStatusIndicator status={task.status} />

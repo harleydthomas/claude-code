@@ -1,28 +1,50 @@
 import { Box, Spacer, Text } from "ink";
 import type { Agent } from "../types.js";
-import { Hotkey } from "./Hotkey.js";
 import { AgentStatusIndicator } from "./StatusIndicator.js";
+import { Hotkey } from "./Hotkey.js";
+import { LabeledShortcut } from "./LabeledShortcut.js";
 
 interface AgentListProps {
   agents: Agent[];
   selectedIndex: number;
 }
 
+interface AgentRowProps {
+  agent: Agent;
+  index: number;
+  selectedIndex: number;
+}
+
+export function AgentRow({ agent, index, selectedIndex }: AgentRowProps) {
+  return <Box key={agent.id} gap={1}>
+    <Text>{index === selectedIndex ? "▶" : "  "}</Text>
+    <Text dimColor>{agent.id}</Text>
+    <Text inverse={index === selectedIndex}>{agent.name}</Text>
+    <Spacer />
+    <AgentStatusIndicator status={agent.status} />
+  </Box>
+}
+
 export function AgentList({ agents, selectedIndex }: AgentListProps) {
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box flexDirection="column" paddingX={1} flexGrow={1}>
       <Box marginTop={-1}>
-        <Hotkey word="Agents" hotkey="a" />
+        <Text>Agents</Text>
       </Box>
-      <Box flexDirection="column" marginTop={1}>
+      <Box flexDirection="column" margin={1}>
         {agents.map((agent, index) => (
-          <Box key={agent.id} gap={1}>
-            <Text>{index === selectedIndex ? "▶" : "  "}</Text>
-            <Text inverse={index === selectedIndex}>{agent.name}</Text>
-            <Spacer />
-            <AgentStatusIndicator status={agent.status} />
-          </Box>
+          <AgentRow agent={agent} index={index} selectedIndex={selectedIndex} />
         ))}
+      </Box>
+      <Spacer />
+      <Box flexDirection="row" marginBottom={-1}>
+        <Text> </Text>
+        <Hotkey word="New agent" hotkey="n" />
+        <Text> | </Text>
+        <Text dimColor>(tab to cycle)</Text>
+        <Text> | </Text>
+        <Text dimColor>(number to select)</Text>
+        <Text> </Text>
       </Box>
     </Box>
   );

@@ -1,5 +1,6 @@
 import { Text } from "ink";
 import type { AgentStatus, TaskStatus } from "../types.js";
+import { LabeledShortcut } from "./LabeledShortcut.js";
 
 export function AgentStatusIndicator({ status }: { status: AgentStatus }) {
   switch (status) {
@@ -26,10 +27,14 @@ export function TaskStatusIndicator({ status }: { status: TaskStatus }) {
 export function AgentStatusCount({ status, count }: { status: AgentStatus; count: number }) {
   switch (status) {
     case "working":
-      return <Text><Text color="yellow" bold>● {count}</Text> Working</Text>;
+      return <Text color="yellow" bold>● {count} Working</Text>;
     case "needs_input":
-      return <Text><Text color="red" bold>● {count}</Text> Waiting</Text>;
+      return (
+        <LabeledShortcut hotkey="⌥A">
+          <Text color="red" bold>● {count} Waiting</Text>
+        </LabeledShortcut>
+      );
     case "done":
-      return <Text><Text color="green" bold>● {count}</Text> Done</Text>;
+      return <Text color="green" bold>● {count} Done</Text>;
   }
 }

@@ -34,13 +34,20 @@ export function App() {
       setShowAgentOverview(false);
     }
 
-    // Arrow navigation only when agent overview is open
+    // Tab navigation when agent overview is open
     if (showAgentOverview) {
-      if (key.upArrow) {
+      if (key.shift && key.tab) {
         setSelectedIndex((i) => Math.max(0, i - 1));
-      }
-      if (key.downArrow) {
+      } else if (key.tab) {
         setSelectedIndex((i) => Math.min(mockAgents.length - 1, i + 1));
+      }
+
+      // Number keys to quick select agent
+      if (/^[1-9]$/.test(input)) {
+        const index = parseInt(input, 10) - 1;
+        if (index < mockAgents.length) {
+          setSelectedIndex(index);
+        }
       }
     }
   });
@@ -65,14 +72,16 @@ export function App() {
         { showAgentOverview ? (
           <AgentOverview agents={mockAgents} selectedIndex={selectedIndex} />
         ) : (
-          <PromptInput
-            value={inputValue}
-            onChange={handleInputChange}
-            onSubmit={handleInputSubmit}
-            isActive={true}
-          />
+          <>
+            <PromptInput
+              value={inputValue}
+              onChange={handleInputChange}
+              onSubmit={handleInputSubmit}
+              isActive={true}
+            />
+            <StatusBar agents={mockAgents} />
+          </>
         )}
-        <StatusBar mode={showAgentOverview ? "agents" : "main"} agents={mockAgents} />
       </Box>
     </Box>
   );

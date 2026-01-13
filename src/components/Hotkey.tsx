@@ -8,7 +8,7 @@ interface HotkeyProps {
 export function Hotkey({ word, hotkey }: HotkeyProps) {
   const index = word.toLowerCase().indexOf(hotkey.toLowerCase());
   if (index === -1) {
-    return <Text bold>{word}</Text>;
+    return <Text>{word}</Text>;
   }
   return (
     <Text bold>

@@ -23,7 +23,9 @@ bun run src/index.tsx # Run the application
 ### AgentOverview
 - **Ctrl+A** - Close AgentOverview
 - **Escape** - Close AgentOverview
-- **↑/↓** - Navigate agent list
+- **Tab** - Select next agent
+- **Shift+Tab** - Select previous agent
+- **1-9** - Quick select agent by index
 - **q** - Quit
 
 ## Architecture
@@ -43,13 +45,14 @@ src/
     ├── index.ts           # Barrel export
     ├── Code.tsx           # Syntax highlighting for code blocks
     ├── Hotkey.tsx         # Hotkey label with highlighted key
+    ├── LabeledShortcut.tsx # Content with dimmed shortcut suffix
     ├── StatusIndicator.tsx # Agent, Task & AgentStatusCount indicators
     ├── StatusBar.tsx      # Bottom bar with context-specific content
     ├── UsageBar.tsx       # Usage meter component
     ├── PromptInput.tsx    # Text input with prompt prefix
     ├── AgentOverview.tsx  # Two-column agent/task panel
     ├── AgentList.tsx      # Agent list with status
-    ├── TaskQueue.tsx      # Task list for selected agent
+    ├── TaskQueue.tsx      # Plan/task list for selected agent
     └── TerminalOutput.tsx # Terminal output display
 ```
 
@@ -58,6 +61,7 @@ src/
 - **Pane labels** use `marginTop={-1}` to sit inline with top border (fieldset-legend style)
 - **Bottom hotkeys** use `marginBottom={-1}` with `<Spacer />` to align with bottom border
 - **Hotkey component** highlights a single letter in red to indicate the keyboard shortcut
+- **LabeledShortcut component** displays content with a dimmed shortcut suffix, e.g., `🤖 Refactor auth (^A)`
 - **Focused pane** indicated by cyan border color
 
 ## Data Model

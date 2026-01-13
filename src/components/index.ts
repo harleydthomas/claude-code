@@ -7,3 +7,4 @@ export { TerminalOutput } from "./TerminalOutput.js";
 export { StatusBar } from "./StatusBar.js";
 export { PromptInput } from "./PromptInput.js";
 export { Code } from "./Code.js";
+export { LabeledShortcut } from "./LabeledShortcut.js";
