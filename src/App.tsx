@@ -66,7 +66,7 @@ export function App() {
 
   // Calculate viewport height (terminal rows minus prompt and status bar)
   // Prompt = 3 lines (borders + content), StatusBar = 1 line, plus 1 for Ink's rendering
-  const viewportHeight = (stdout.rows || 40) - 5;
+  const viewportHeight = (stdout.rows || 40) - (selectedAgent.status === "needs_input" ? 2 : 5);
 
   // Scroll state - computed synchronously to avoid flicker when switching agents
   const { scrollOffset, scrollUp, scrollDown } = useMouseScroll({
@@ -207,14 +207,16 @@ export function App() {
         selectedOptionId={selectedOptionId}
       />
       <Box flexDirection="column">
-        <PromptInput
-          value={inputValue}
-          onChangeChar={handleInputChar}
-          onDeleteChar={handleDeleteChar}
-          onClear={handleClearInput}
-          onSubmit={handleInputSubmit}
-          isActive={true}
-        />
+        {selectedAgent.status !== "needs_input" && (
+          <PromptInput
+            value={inputValue}
+            onChangeChar={handleInputChar}
+            onDeleteChar={handleDeleteChar}
+            onClear={handleClearInput}
+            onSubmit={handleInputSubmit}
+            isActive={true}
+          />
+        )}
         {showAgentOverview ? (
           <AgentOverview agents={mockAgents} selectedIndex={selectedIndex} />
         ) : showCommandMenu ? (

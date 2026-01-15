@@ -16,7 +16,7 @@ interface AgentRowProps {
 }
 
 export function AgentRow({ agent, index, selectedIndex }: AgentRowProps) {
-  return <Box key={agent.id} gap={1}>
+  return <Box gap={1}>
     <Text>{index === selectedIndex ? "▶" : "  "}</Text>
     <Text inverse={index === selectedIndex}>{agent.name}</Text>
     <Spacer />
@@ -33,7 +33,7 @@ export function AgentList({ agents, selectedIndex }: AgentListProps) {
       </Box>
       <Box flexDirection="column" margin={1}>
         {agents.map((agent, index) => (
-          <AgentRow agent={agent} index={index} selectedIndex={selectedIndex} />
+          <AgentRow key={agent.id} agent={agent} index={index} selectedIndex={selectedIndex} />
         ))}
       </Box>
       <Spacer />

@@ -187,4 +187,8 @@ The `Option` component (in mockAgents.tsx) renders selectable options for agents
 
 **Format:** `{index}. {title} (Recommended)  {description}`
 
+**Hint text:** After options, display `Esc to cancel · Tab to add additional instructions`
+
 **Navigation:** When an agent has `optionIds`, arrow keys navigate options instead of scrolling. Selection state is passed via `React.cloneElement` in TerminalOutput.
+
+**Input behavior:** When `selectedAgent.status === "needs_input"`, the PromptInput is hidden to focus user attention on selecting an option.

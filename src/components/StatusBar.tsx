@@ -1,4 +1,4 @@
-import { Box, Spacer, Text } from "ink";
+import { Box, Newline, Spacer, Text } from "ink";
 import { Hotkey } from "./Hotkey.js";
 import { UsageBar } from "./UsageBar.js";
 import { AgentStatusCount } from "./StatusIndicator.js";
@@ -27,7 +27,13 @@ interface StatusBarProps {
 export function StatusBar({ agents = [], selectedAgent }: StatusBarProps) {
   return (
     <Box paddingX={2}>
-      <Text><Text color="magentaBright">⏵⏵ accept edits on</Text> (shift+tab to cycle)</Text>
+      <Box>
+        {selectedAgent.status === "needs_input" ? (
+          <Text>Esc to cancel · Tab to add additional instructions</Text>
+        ) : (
+          <Text><Text color="magentaBright">⏵⏵ accept edits on</Text> (shift+tab to cycle)</Text>
+        )}
+      </Box>
       <Spacer />
       <LabeledShortcut hotkey="⌥A">
         <Text>🤖 <Text color="blue">{selectedAgent.name}</Text></Text>
