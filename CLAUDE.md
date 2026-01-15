@@ -16,9 +16,10 @@ bun run src/index.tsx # Run the application
 ## Keyboard Shortcuts
 
 ### Main View
-- **↑/↓** - Scroll terminal output
+- **↑/↓** - Scroll terminal output (or navigate options if agent has options)
 - **/** - Open command menu
 - **Option+A** - Toggle AgentOverview panel
+- **Shift+Option+A** - Cycle through agents (ordered by status: needs_input → done → working)
 - **Ctrl+U** - Clear input
 - **q** - Quit
 - **Enter** - Submit prompt
@@ -85,6 +86,7 @@ interface Agent {
   status: AgentStatus;
   tasks: Task[];
   outputLines: ReactNode[];  // Array of lines for virtual scrolling
+  optionIds?: string[];      // IDs of Option elements for keyboard navigation
 }
 
 interface Command {
@@ -164,8 +166,25 @@ The `CommandMenu` component appears when the user types "/" in the prompt, repla
 - Optional shortcut displayed dimmed after command name
 
 **Filtering:**
-Commands are filtered by matching input text against command names. E.g., "/cl" shows "clear" and "compact".
+Commands are filtered by matching the beginning of any word (hyphen-separated) in command names. E.g., "/cl" shows "clear" and "compact", "/hub" matches "install-github-app".
 
 **Execution:**
 - Selecting "agents" command opens AgentOverview
+- Selecting "exit" command quits the app
 - Other commands clear input (placeholder behavior)
+
+## Option Component
+
+The `Option` component (in mockAgents.tsx) renders selectable options for agents that need user input.
+
+**Props:**
+- `id` - Unique identifier for keyboard navigation
+- `index` - Display number (1, 2, 3...)
+- `children` - Option title
+- `description` - Inline description (dimmed)
+- `recommended` - Shows "(Recommended)" suffix
+- `selected` - Highlights in cyan (managed by TerminalOutput via cloneElement)
+
+**Format:** `{index}. {title} (Recommended)  {description}`
+
+**Navigation:** When an agent has `optionIds`, arrow keys navigate options instead of scrolling. Selection state is passed via `React.cloneElement` in TerminalOutput.

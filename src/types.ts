@@ -15,6 +15,7 @@ export interface Agent {
   status: AgentStatus;
   tasks: Task[];
   outputLines: ReactNode[];  // Array of lines for virtual scrolling
+  optionIds?: string[];  // IDs of Option elements in outputLines for keyboard navigation
 }
 
 export interface Command {

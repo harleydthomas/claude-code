@@ -30,7 +30,7 @@ export function AgentStatusCount({ status, count }: { status: AgentStatus; count
       return <Text color="yellow" bold>● {count} Working</Text>;
     case "needs_input":
       return (
-        <LabeledShortcut hotkey="shift+⌥A">
+        <LabeledShortcut hotkey="shift+⌥+A">
           <Text color="red" bold>● {count} Waiting</Text>
         </LabeledShortcut>
       );

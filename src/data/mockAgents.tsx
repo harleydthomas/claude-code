@@ -30,12 +30,13 @@ function Response({ children }: { children: string }) {
   );
 }
 
-function Option({ selected, recommended, children }: { selected?: boolean; recommended?: boolean; children: string }) {
+export function Option({ id, index, selected, recommended, description, children }: { id: string; index: number; selected?: boolean; recommended?: boolean; description?: string; children: string }) {
   return (
     <Text>
-      <Text color={selected ? "cyan" : "gray"}>{selected ? "●" : "○"}</Text>
-      <Text> {children}</Text>
-      {recommended && <Text dimColor> (Recommended)</Text>}
+      <Text>{selected ? "❯ " : "  "}</Text>
+      <Text color={selected ? "magenta" : undefined}>{index}. {children}</Text>
+      {recommended && <Text> (Recommended)</Text>}
+      {description && <Text dimColor>  {description}</Text>}
     </Text>
   );
 }
@@ -160,6 +161,7 @@ const agent1OutputLines = [
   <Code key="c82">{`34      </Box>`}</Code>,
   <Code key="c83">{`35    );`}</Code>,
   <Code key="c84">{`36  }`}</Code>,
+  <Text key="end"> </Text>,
 ];
 
 // Agent 2: Write tests - outputLines as array
@@ -228,14 +230,12 @@ const agent2OutputLines = [
   <Text key="s9"> </Text>,
   <Text key="o14">{"Found "}<Text bold>12 untested functions</Text>{" across 3 files. No test framework is configured yet."}</Text>,
   <Text key="s10"> </Text>,
-  <Text key="o15" color="magenta" bold>? Which test framework would you like to use?</Text>,
+  <Response key="o15">Which test framework would you like to use?</Response>,
   <Text key="s11"> </Text>,
-  <Option key="opt1" selected recommended>Vitest</Option>,
-  <Text key="o16" dimColor>{"    Fast, ESM-native, works with your Vite setup"}</Text>,
-  <Option key="opt2">Jest</Option>,
-  <Text key="o17" dimColor>{"    Popular, large ecosystem"}</Text>,
-  <Option key="opt3">Node.js test runner</Option>,
-  <Text key="o18" dimColor>{"    Built-in, zero config"}</Text>,
+  <Option key="opt1" id="opt1" index={1} recommended description="Fast, ESM-native, works with your Vite setup">Vitest</Option>,
+  <Option key="opt2" id="opt2" index={2} description="Popular, large ecosystem">Jest</Option>,
+  <Option key="opt3" id="opt3" index={3} description="Built-in, zero config">Node.js test runner</Option>,
+  <Text key="end"> </Text>,
 ];
 
 // Agent 3: Fix navbar - outputLines as array
@@ -324,6 +324,7 @@ const agent3OutputLines = [
   <Text key="o11">{"Done. The navbar now displays correctly on mobile devices."}</Text>,
   <Text key="s12"> </Text>,
   <Text key="o12" dimColor>{"✻ Cooked for 42s"}</Text>,
+  <Text key="end"> </Text>,
 ];
 
 // Agent 4: Add migrations - outputLines as array
@@ -430,6 +431,7 @@ const agent4OutputLines = [
   <Text key="o15">{`Migrations complete!`}</Text>,
   <Text key="s14"> </Text>,
   <Text key="o16" dimColor>{"✻ Cooked for 1m 34s"}</Text>,
+  <Text key="end"> </Text>,
 ];
 
 export const mockAgents: Agent[] = [
@@ -458,6 +460,7 @@ export const mockAgents: Agent[] = [
       { id: "2-5", name: "Set up coverage thresholds in CI", status: "pending" },
     ],
     outputLines: agent2OutputLines,
+    optionIds: ["opt1", "opt2", "opt3"],
   },
   {
     id: "3",

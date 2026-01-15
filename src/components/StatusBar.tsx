@@ -21,15 +21,16 @@ function AgentStatusSummary({ agents }: { agents: Agent[] }) {
 
 interface StatusBarProps {
   agents?: Agent[];
+  selectedAgent: Agent;
 }
 
-export function StatusBar({ agents = [] }: StatusBarProps) {
+export function StatusBar({ agents = [], selectedAgent }: StatusBarProps) {
   return (
     <Box paddingX={2}>
       <Text><Text color="magentaBright">⏵⏵ accept edits on</Text> (shift+tab to cycle)</Text>
       <Spacer />
       <LabeledShortcut hotkey="⌥A">
-        <Text color="blue">🤖 Refactor auth</Text>
+        <Text>🤖 <Text color="blue">{selectedAgent.name}</Text></Text>
       </LabeledShortcut>
       <Box width={3} />
       <AgentStatusSummary agents={agents} />
