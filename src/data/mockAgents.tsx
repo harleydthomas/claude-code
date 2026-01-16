@@ -493,6 +493,7 @@ export const mockAgents: Agent[] = [
       { id: "3-5", name: "Verify no visual regressions on desktop", status: "completed" },
     ],
     outputLines: agent3OutputLines,
+    suggestion: "Commit fix navbar changes",
   },
   {
     id: "2",
@@ -520,6 +521,7 @@ export const mockAgents: Agent[] = [
       { id: "4-5", name: "Run migrations and verify tables created", status: "completed" },
     ],
     outputLines: agent4OutputLines,
+    suggestion: "Test migrations",
   },
   {
     id: "5",

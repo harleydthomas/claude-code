@@ -6,7 +6,9 @@ interface PromptInputProps {
   onDeleteChar: () => void;
   onClear: () => void;
   onSubmit: (value: string) => void;
+  onTab: () => void;
   isActive: boolean;
+  suggestion?: string;
 }
 
 // Check if input looks like part of a mouse escape sequence
@@ -30,7 +32,7 @@ function isMouseSequence(input: string): boolean {
   return false;
 }
 
-export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubmit, isActive }: PromptInputProps) {
+export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubmit, onTab, isActive, suggestion }: PromptInputProps) {
   useInput(
     (input, key) => {
       if (!isActive) return;
@@ -42,6 +44,8 @@ export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubm
 
       if (key.return) {
         onSubmit(value);
+      } else if (key.tab) {
+        onTab();
       } else if (key.ctrl && input === "u") {
         // Ctrl+U clears entire input (standard readline shortcut)
         onClear();
@@ -58,8 +62,14 @@ export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubm
   return (
     <Box borderStyle="single" borderDimColor borderLeft={false} borderRight={false}>
       <Text>{"❯"} </Text>
-      <Text>{value}</Text>
-      <Text backgroundColor="white"> </Text>
+      {suggestion && value.length === 0 ? (
+        <Text dimColor>{suggestion}</Text>
+      ) : (
+        <>
+          <Text>{value}</Text>
+          <Text backgroundColor="white"> </Text>
+        </>
+      )}
     </Box>
   );
 }

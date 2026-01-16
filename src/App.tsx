@@ -88,10 +88,11 @@ export function App() {
     setCommandSelectedIndex(0);
   }, [commandFilter]);
 
-  // Reset option selection when agent changes
+  // Reset option selection and prompt input when agent changes
   useEffect(() => {
     const ids = mockAgents[selectedIndex].optionIds ?? [];
     setSelectedOptionId(ids.length > 0 ? ids[0] : null);
+    setInputValue("");
   }, [selectedIndex]);
 
   useInput((input, key) => {
@@ -120,7 +121,7 @@ export function App() {
       }
     }
 
-    // Arrow keys for option selection (works even with AgentOverview open)
+    // Arrow keys for option selection
     // Exclude meta+arrow which is used for agent navigation in AgentOverview
     if (!showCommandMenu && hasOptions && !key.meta) {
       const currentIndex = selectedOptionId ? optionIds.indexOf(selectedOptionId) : 0;
@@ -172,7 +173,7 @@ export function App() {
       }
     }
 
-    // Tab navigation when agent overview is open
+    // Agent list navigation
     if (showAgentOverview) {
       if (key.meta && key.upArrow) {
         setSelectedIndex((i) => Math.max(0, i - 1));
@@ -206,6 +207,10 @@ export function App() {
     setInputValue("");
   };
 
+  const handleAutocomplete = () => {
+    setInputValue(selectedAgent.suggestion || "");
+  };
+
   return (
     <Box flexDirection="column" width="100%" height="100%">
       <TerminalOutput
@@ -222,7 +227,9 @@ export function App() {
             onDeleteChar={handleDeleteChar}
             onClear={handleClearInput}
             onSubmit={handleInputSubmit}
+            onTab={handleAutocomplete}
             isActive={true}
+            suggestion={selectedAgent.suggestion}
           />
         )}
         {showCommandMenu ? (
