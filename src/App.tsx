@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { Box, useApp, useInput, useStdout } from "ink";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { Box, useApp, useInput, useStdout, measureElement, type DOMElement } from "ink";
 import { mockAgents } from "./data/mockAgents.js";
 import { AgentOverview, CommandMenu, PromptInput, StatusBar, TerminalOutput } from "./components/index.js";
 import { useMouseScroll } from "./hooks/useMouseScroll.js";
@@ -42,6 +42,8 @@ export function App() {
   const selectedAgent = mockAgents[selectedIndex];
   const optionIds = selectedAgent.optionIds ?? [];
   const hasOptions = optionIds.length > 0;
+  const bottomRef = useRef<DOMElement>(null);
+  const [bottomHeight, setBottomHeight] = useState(0);
 
   // Sorted agent indices for cycling: needs_input first, then done, then working
   const sortedAgentIndices = useMemo(() => {
@@ -64,11 +66,15 @@ export function App() {
     return words.some(word => word.startsWith(commandFilter));
   });
 
-  // Calculate viewport height (terminal rows minus prompt and status bar)
-  // Prompt = 3 lines (borders + content), StatusBar = 1 line, plus 1 for Ink's rendering
-  // AgentOverview = 5 lines (padding + border + margin) + number of agents
-  const agentOverviewHeight = showAgentOverview ? 5 + mockAgents.length : 0;
-  const viewportHeight = (stdout.rows || 40) - (selectedAgent.status === "needs_input" ? 2 : 5) - agentOverviewHeight;
+  // Measure bottom section height and calculate viewport height dynamically
+  useEffect(() => {
+    if (bottomRef.current) {
+      const { height } = measureElement(bottomRef.current);
+      setBottomHeight(height);
+    }
+  }, [showAgentOverview, showCommandMenu, selectedAgent.status, filteredCommands.length]);
+
+  const viewportHeight = (stdout.rows || 40) - bottomHeight;
 
   // Scroll state - computed synchronously to avoid flicker when switching agents
   const { scrollOffset, scrollUp, scrollDown } = useMouseScroll({
@@ -208,7 +214,7 @@ export function App() {
         viewportHeight={viewportHeight}
         selectedOptionId={selectedOptionId}
       />
-      <Box flexDirection="column">
+      <Box ref={bottomRef} flexDirection="column">
         {selectedAgent.status !== "needs_input" && (
           <PromptInput
             value={inputValue}

@@ -10,7 +10,7 @@ export function TaskQueue({ agent }: TaskQueueProps) {
   return (
     <Box flexDirection="column" paddingX={1} flexGrow={1}>
       <Box marginTop={-1}>
-        <Text>Plan</Text>
+        <Text>Tasks</Text>
       </Box>
       <Box flexDirection="column" margin={1}>
         {agent.tasks.map((task) => (
