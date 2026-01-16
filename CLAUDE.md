@@ -20,13 +20,16 @@ bun run typecheck  # Run TypeScript type checking
 ## Keyboard Shortcuts
 
 ### Main View
-- **↑/↓** - Scroll terminal output (or navigate options if agent has options)
+- **↑/↓** - Navigate options (if agent has options) or scroll terminal output
 - **/** - Open command menu
 - **Option+A** - Toggle AgentOverview panel
 - **Shift+Option+A** - Cycle through agents (ordered by status: needs_input → done → working)
+- **Option+↑/↓** - Navigate agents (when AgentOverview is open)
 - **Ctrl+U** - Clear input
 - **q** - Quit
 - **Enter** - Submit prompt
+
+**Note:** Arrow keys navigate options even when AgentOverview is open. Use Option+Arrow to navigate between agents.
 
 ### Command Menu
 - **↑/↓** - Navigate commands
@@ -56,6 +59,7 @@ src/
 │   └── useMouseScroll.ts  # Mouse scroll handling for terminal output
 └── components/
     ├── index.ts           # Barrel export
+    ├── AgentOutput.tsx    # Output line components (Tool, Prompt, Working, Response, Option)
     ├── Code.tsx           # Syntax highlighting for code blocks
     ├── CommandMenu.tsx    # Slash command menu overlay
     ├── Hotkey.tsx         # Hotkey label with highlighted key
@@ -66,7 +70,7 @@ src/
     ├── PromptInput.tsx    # Text input with prompt prefix
     ├── AgentOverview.tsx  # Two-column agent/task panel
     ├── AgentList.tsx      # Agent list with status
-    ├── TaskQueue.tsx      # Plan/task list for selected agent
+    ├── TaskQueue.tsx      # Task list for selected agent
     └── TerminalOutput.tsx # Terminal output display
 ```
 
@@ -145,6 +149,8 @@ The `useMouseScroll` hook enables scrolling for terminal output using a virtual 
 
 **Why virtual list?** Ink doesn't support CSS-like `overflow: hidden` with `marginTop` scrolling. Content must be sliced and re-rendered.
 
+**Dynamic viewport height:** The viewport height is calculated using Ink's `measureElement` to measure the bottom section (PromptInput, StatusBar, CommandMenu, AgentOverview). This adapts automatically when components are shown/hidden rather than using manual height calculations.
+
 **Usage:**
 ```typescript
 // Hook accepts content info and computes scroll position synchronously
@@ -177,9 +183,39 @@ Commands are filtered by matching the beginning of any word (hyphen-separated) i
 - Selecting "exit" command quits the app
 - Other commands clear input (placeholder behavior)
 
-## Option Component
+## Agent Output Components
 
-The `Option` component (in mockAgents.tsx) renders selectable options for agents that need user input.
+The `AgentOutput.tsx` file contains components for rendering agent output lines:
+
+### Tool
+Displays tool invocations with green indicator.
+```
+⏺ ToolName(args)
+```
+
+### Prompt
+User prompt with blue indicator on dark background.
+```
+❯ User's prompt text
+```
+
+### Working
+Animated working indicator with live-updating stats:
+- Spinner cycles through `·✦✶✻✶✦` at 240ms intervals
+- Elapsed time updates every 960ms
+- Token count increases by random 50-150 every 480ms
+```
+✻ Channelling… (ctrl+c to interrupt · 5s · ↑ 1.3k tokens · thinking)
+```
+
+### Response
+Agent response with yellow indicator.
+```
+⏺ Response text
+```
+
+### Option
+Selectable options for agents that need user input.
 
 **Props:**
 - `id` - Unique identifier for keyboard navigation
@@ -187,13 +223,11 @@ The `Option` component (in mockAgents.tsx) renders selectable options for agents
 - `children` - Option title
 - `description` - Inline description (dimmed)
 - `recommended` - Shows "(Recommended)" suffix
-- `selected` - Highlights in cyan (managed by TerminalOutput via cloneElement)
+- `selected` - Highlights in magenta (managed by TerminalOutput via cloneElement)
 
 **Format:** `{index}. {title} (Recommended)  {description}`
 
-**Hint text:** After options, display `Esc to cancel · Tab to add additional instructions`
-
-**Navigation:** When an agent has `optionIds`, arrow keys navigate options instead of scrolling. Selection state is passed via `React.cloneElement` in TerminalOutput.
+**Navigation:** When an agent has `optionIds`, arrow keys navigate options instead of scrolling (even when AgentOverview is open). Selection state is passed via `React.cloneElement` in TerminalOutput.
 
 **Input behavior:** When `selectedAgent.status === "needs_input"`, the PromptInput is hidden to focus user attention on selecting an option.
 

@@ -1,45 +1,8 @@
-import { Box, Text } from "ink";
+import { Text } from "ink";
 import type { Agent } from "../types.js";
-import { Code } from "../components/index.js";
+import { Code, Tool, Prompt, Working, Response, Option } from "../components/index.js";
 
-// Helper components for output styling
-function Tool({ name, args }: { name: string; args: string }) {
-  return (
-    <Text>
-      <Text color="green">{"⏺ "}</Text>
-      <Text bold>{name}</Text>
-      <Text>({args})</Text>
-    </Text>
-  );
-}
-
-function Prompt({ children }: { children: string }) {
-  return (
-    <Box backgroundColor={"#303030"}>
-      <Text color="blue">{"❯ "}{children}</Text>
-    </Box>
-  );
-}
-
-function Response({ children }: { children: string }) {
-  return (
-    <Box>
-      <Text color="yellow">{"⏺ "}</Text>
-      <Text>{children}</Text>
-    </Box>
-  );
-}
-
-export function Option({ id: _id, index, selected, recommended, description, children }: { id: string; index: number; selected?: boolean; recommended?: boolean; description?: string; children: string }) {
-  return (
-    <Text>
-      <Text>{selected ? "❯ " : "  "}</Text>
-      <Text color={selected ? "magenta" : undefined}>{index}. {children}</Text>
-      {recommended && <Text> (Recommended)</Text>}
-      {description && <Text dimColor>  {description}</Text>}
-    </Text>
-  );
-}
+export { Option };
 
 // Agent 1: Refactor auth - outputLines as array
 const agent1OutputLines = [
@@ -161,6 +124,8 @@ const agent1OutputLines = [
   <Code key="c82">{`34      </Box>`}</Code>,
   <Code key="c83">{`35    );`}</Code>,
   <Code key="c84">{`36  }`}</Code>,
+  <Text key="s14"> </Text>,
+  <Working key="w1">Channelling</Working>,
   <Text key="end"> </Text>,
 ];
 
@@ -517,6 +482,19 @@ export const mockAgents: Agent[] = [
     outputLines: agent1OutputLines,
   },
   {
+    id: "3",
+    name: "Fix navbar",
+    status: "done",
+    tasks: [
+      { id: "3-1", name: "Identify responsive breakpoint issues in Navbar.tsx", status: "completed" },
+      { id: "3-2", name: "Fix mobile menu z-index conflicts with header", status: "completed" },
+      { id: "3-3", name: "Add hamburger button visibility for viewports < 640px", status: "completed" },
+      { id: "3-4", name: "Test across viewport sizes (320px, 640px, 1024px)", status: "completed" },
+      { id: "3-5", name: "Verify no visual regressions on desktop", status: "completed" },
+    ],
+    outputLines: agent3OutputLines,
+  },
+  {
     id: "2",
     name: "Write tests",
     status: "needs_input",
@@ -529,19 +507,6 @@ export const mockAgents: Agent[] = [
     ],
     outputLines: agent2OutputLines,
     optionIds: ["opt1", "opt2", "opt3"],
-  },
-  {
-    id: "3",
-    name: "Fix navbar",
-    status: "done",
-    tasks: [
-      { id: "3-1", name: "Identify responsive breakpoint issues in Navbar.tsx", status: "completed" },
-      { id: "3-2", name: "Fix mobile menu z-index conflicts with header", status: "completed" },
-      { id: "3-3", name: "Add hamburger button visibility for viewports < 640px", status: "completed" },
-      { id: "3-4", name: "Test across viewport sizes (320px, 640px, 1024px)", status: "completed" },
-      { id: "3-5", name: "Verify no visual regressions on desktop", status: "completed" },
-    ],
-    outputLines: agent3OutputLines,
   },
   {
     id: "4",

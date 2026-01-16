@@ -9,3 +9,4 @@ export { PromptInput } from "./PromptInput.js";
 export { Code } from "./Code.js";
 export { LabeledShortcut } from "./LabeledShortcut.js";
 export { CommandMenu } from "./CommandMenu.js";
+export { Tool, Prompt, Working, Response, Option } from "./AgentOutput.js";
