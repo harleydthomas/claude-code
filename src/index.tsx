@@ -4,7 +4,9 @@ import { App } from "./App.js";
 // Enter alternate screen buffer
 process.stdout.write("\x1b[?1049h");
 
-const { waitUntilExit } = render(<App />);
+const { waitUntilExit } = render(<App />, {
+  incrementalRendering: true,
+});
 
 waitUntilExit().then(() => {
   // Exit alternate screen buffer

@@ -3,33 +3,8 @@ import { Box, useApp, useInput, useStdout, measureElement, type DOMElement } fro
 import { mockAgents } from "./data/mockAgents.js";
 import { AgentOverview, CommandMenu, PromptInput, StatusBar, TerminalOutput } from "./components/index.js";
 import { useMouseScroll } from "./hooks/useMouseScroll.js";
-import type { AgentStatus, Command } from "./types.js";
-
-// Status priority for cycling: needs_input first, then done, then working
-const statusPriority: Record<AgentStatus, number> = {
-  needs_input: 0,
-  done: 1,
-  working: 2,
-};
-
-const commands: Command[] = [
-  { name: "init", description: "Initialize a new CLAUDE.md file with codebase documentation" },
-  { name: "add-dir", description: "Add a new working directory" },
-  { name: "agents", description: "Manage running agents", shortcut: "⌥A" },
-  { name: "agent-config", description: "Manage agent configurations" },
-  { name: "chrome", description: "Claude in Chrome (Beta) settings" },
-  { name: "clear", description: "Clear conversation history and free up context" },
-  { name: "compact", description: "Clear conversation history but keep a summary in context" },
-  { name: "mobile", description: "Show QR code to download the Claude mobile app" },
-  { name: "permissions", description: "Manage allow & deny tool permission rules" },
-  { name: "install-github-app", description: "Set up Claude GitHub Actions for a repository" },
-  { name: "usage", description: "Show plan usage limits" },
-  { name: "context", description: "Visualize current context usage as a colored grid" },
-  { name: "doctor", description: "Diagnose and verify your Claude Code installation and settings" },
-  { name: "stats", description: "Show your Claude Code usage statistics and activity" },
-  { name: "ide", description: "Manage IDE integrations and show status" },
-  { name: "exit", description: "Exit the REPL" }
-];
+import { statusPriority } from "./types.js";
+import { commands } from "./components/CommandMenu.js";
 
 export function App() {
   const { exit } = useApp();
@@ -220,18 +195,17 @@ export function App() {
         selectedOptionId={selectedOptionId}
       />
       <Box ref={bottomRef} flexDirection="column">
-        {selectedAgent.status !== "needs_input" && (
-          <PromptInput
-            value={inputValue}
-            onChangeChar={handleInputChar}
-            onDeleteChar={handleDeleteChar}
-            onClear={handleClearInput}
-            onSubmit={handleInputSubmit}
-            onTab={handleAutocomplete}
-            isActive={true}
-            suggestion={selectedAgent.suggestion}
-          />
-        )}
+        <PromptInput
+          value={inputValue}
+          onChangeChar={handleInputChar}
+          onDeleteChar={handleDeleteChar}
+          onClear={handleClearInput}
+          onSubmit={handleInputSubmit}
+          onTab={handleAutocomplete}
+          isActive={true}
+          selectedAgent={selectedAgent}
+          suggestion={selectedAgent.suggestion}
+        />
         {showCommandMenu ? (
           <CommandMenu
             commands={filteredCommands}

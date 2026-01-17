@@ -19,6 +19,13 @@ export interface Agent {
   suggestion?: string;
 }
 
+// Status priority for cycling: needs_input first, then done, then working
+export const statusPriority: Record<AgentStatus, number> = {
+  needs_input: 0,
+  done: 1,
+  working: 2,
+};
+
 export interface Command {
   name: string;
   description: string;

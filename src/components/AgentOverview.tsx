@@ -14,14 +14,14 @@ export function AgentOverview({ agents, selectedIndex }: AgentOverviewProps) {
       <Box
         flexDirection="column"
         borderStyle="single"
-        width="40%"
+        width="50%"
       >
         <AgentList agents={agents} selectedIndex={selectedIndex} />
       </Box>
       <Box
         flexDirection="column"
         borderStyle="single"
-        width="60%"
+        width="50%"
       >
         <TaskQueue agent={agents[selectedIndex]} />
       </Box>

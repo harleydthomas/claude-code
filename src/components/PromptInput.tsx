@@ -1,4 +1,5 @@
 import { Box, Text, useInput } from "ink";
+import type { Agent } from "../types";
 
 interface PromptInputProps {
   value: string;
@@ -8,6 +9,7 @@ interface PromptInputProps {
   onSubmit: (value: string) => void;
   onTab: () => void;
   isActive: boolean;
+  selectedAgent: Agent;
   suggestion?: string;
 }
 
@@ -32,7 +34,7 @@ function isMouseSequence(input: string): boolean {
   return false;
 }
 
-export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubmit, onTab, isActive, suggestion }: PromptInputProps) {
+export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubmit, onTab, isActive, selectedAgent, suggestion }: PromptInputProps) {
   useInput(
     (input, key) => {
       if (!isActive) return;
@@ -60,15 +62,23 @@ export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubm
   );
 
   return (
-    <Box borderStyle="single" borderDimColor borderLeft={false} borderRight={false}>
-      <Text>{"❯"} </Text>
-      {suggestion && value.length === 0 ? (
-        <Text dimColor>{suggestion}</Text>
+    <Box flexDirection="column" height={3} justifyContent="center">
+      {selectedAgent.status === "needs_input" ? (
+        <Box paddingLeft={2}>
+          <Text>Esc to cancel · Tab to add additional instructions</Text>
+        </Box>
       ) : (
-        <>
-          <Text>{value}</Text>
-          <Text backgroundColor="white"> </Text>
-        </>
+        <Box borderStyle="single" borderDimColor borderLeft={false} borderRight={false}>
+          <Text>{"❯"} </Text>
+          {suggestion && value.length === 0 ? (
+            <Text dimColor>{suggestion}</Text>
+          ) : (
+            <>
+              <Text>{value}</Text>
+              <Text backgroundColor="white"> </Text>
+            </>
+          )}
+        </Box>
       )}
     </Box>
   );

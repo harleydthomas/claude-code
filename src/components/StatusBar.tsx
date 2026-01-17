@@ -26,9 +26,7 @@ export function StatusBar({ agents = [], selectedAgent }: StatusBarProps) {
   return (
     <Box paddingX={2}>
       <Box>
-        {selectedAgent.status === "needs_input" ? (
-          <Text>Esc to cancel · Tab to add additional instructions</Text>
-        ) : (
+        {selectedAgent.status !== "needs_input" && (
           <Text><Text color="magentaBright">⏵⏵ accept edits on</Text> (shift+tab to cycle)</Text>
         )}
       </Box>
