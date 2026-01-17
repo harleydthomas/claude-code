@@ -13,12 +13,16 @@ export function TaskQueue({ agent }: TaskQueueProps) {
         <Text>Tasks</Text>
       </Box>
       <Box flexDirection="column" margin={1}>
-        {agent.tasks.map((task) => (
-          <Box key={task.id} gap={1}>
-            <TaskStatusIndicator status={task.status} />
-            <Text dimColor={task.status === "completed"}>{task.name}</Text>
-          </Box>
-        ))}
+        {agent.tasks.length === 0 ? (
+          <Text dimColor={true}>Divining tasks...</Text>
+        ) : (
+          agent.tasks.map((task) => (
+            <Box key={task.id} gap={1}>
+              <TaskStatusIndicator status={task.status} />
+              <Text dimColor={task.status === "completed"}>{task.name}</Text>
+            </Box>
+          ))
+        )}
       </Box>
     </Box>
   );

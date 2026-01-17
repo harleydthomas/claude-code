@@ -10,7 +10,6 @@ interface PromptInputProps {
   onTab: () => void;
   isActive: boolean;
   selectedAgent: Agent;
-  suggestion?: string;
 }
 
 // Check if input looks like part of a mouse escape sequence
@@ -34,7 +33,7 @@ function isMouseSequence(input: string): boolean {
   return false;
 }
 
-export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubmit, onTab, isActive, selectedAgent, suggestion }: PromptInputProps) {
+export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubmit, onTab, isActive, selectedAgent }: PromptInputProps) {
   useInput(
     (input, key) => {
       if (!isActive) return;
@@ -70,8 +69,8 @@ export function PromptInput({ value, onChangeChar, onDeleteChar, onClear, onSubm
       ) : (
         <Box borderStyle="single" borderDimColor borderLeft={false} borderRight={false}>
           <Text>{"❯"} </Text>
-          {suggestion && value.length === 0 ? (
-            <Text dimColor>{suggestion}</Text>
+          {selectedAgent.suggestion && selectedAgent.status === "done" && value.length === 0 ? (
+            <Text dimColor>{selectedAgent.suggestion}</Text>
           ) : (
             <>
               <Text>{value}</Text>

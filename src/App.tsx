@@ -1,20 +1,21 @@
-import { useState, useEffect, useMemo, useRef } from "react";
-import { Box, useApp, useInput, useStdout, measureElement, type DOMElement } from "ink";
-import { mockAgents } from "./data/mockAgents.js";
-import { AgentOverview, CommandMenu, PromptInput, StatusBar, TerminalOutput } from "./components/index.js";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { Box, Text, useApp, useInput, useStdout, measureElement, type DOMElement } from "ink";
+import { mockAgents as initialMockAgents } from "./data/mockAgents.js";
+import { AgentOverview, CommandMenu, PromptInput, StatusBar, TerminalOutput, Working, Prompt } from "./components/index.js";
 import { useMouseScroll } from "./hooks/useMouseScroll.js";
-import { statusPriority } from "./types.js";
+import { statusPriority, type Agent } from "./types.js";
 import { commands } from "./components/CommandMenu.js";
 
 export function App() {
   const { exit } = useApp();
   const { stdout } = useStdout();
+  const [agents, setAgents] = useState<Agent[]>(initialMockAgents);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showAgentOverview, setShowAgentOverview] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [commandSelectedIndex, setCommandSelectedIndex] = useState(0);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const selectedAgent = mockAgents[selectedIndex];
+  const selectedAgent = agents[selectedIndex];
   const optionIds = selectedAgent.optionIds ?? [];
   const hasOptions = optionIds.length > 0;
   const bottomRef = useRef<DOMElement>(null);
@@ -22,7 +23,7 @@ export function App() {
 
   // Sorted agent indices for cycling: needs_input first, then done, then working
   const sortedAgentIndices = useMemo(() => {
-    return mockAgents
+    return agents
       .map((agent, index) => ({ agent, index }))
       .sort((a, b) => {
         const statusDiff = statusPriority[a.agent.status] - statusPriority[b.agent.status];
@@ -30,7 +31,28 @@ export function App() {
         return a.agent.id.localeCompare(b.agent.id);
       })
       .map(item => item.index);
-  }, []);
+  }, [agents]);
+
+  // Start working on an agent: change status to "working" and append Prompt + Working lines
+  const startWorking = useCallback((prompt: string, workingMessage: string = "Thinking") => {
+    const timestamp = Date.now();
+    selectedAgent.tasks = []; // Clear tasks when starting work
+    setAgents(prevAgents => prevAgents.map((agent, index) => {
+      if (index !== selectedIndex) return agent;
+      return {
+        ...agent,
+        status: "working" as const,
+        optionIds: undefined,
+        outputLines: [
+          ...agent.outputLines,
+          <Prompt key={`prompt-${timestamp}`}>{prompt}</Prompt>,
+          <Text key={`space-${timestamp}`}> </Text>,
+          <Working key={`working-${timestamp}`}>{workingMessage}</Working>,
+          <Text key={`end-${timestamp}`}> </Text>,
+        ],
+      };
+    }));
+  }, [selectedIndex]);
 
   // Command menu state derived from input
   const showCommandMenu = inputValue.startsWith("/");
@@ -65,10 +87,10 @@ export function App() {
 
   // Reset option selection and prompt input when agent changes
   useEffect(() => {
-    const ids = mockAgents[selectedIndex].optionIds ?? [];
+    const ids = agents[selectedIndex]?.optionIds ?? [];
     setSelectedOptionId(ids.length > 0 ? ids[0] : null);
     setInputValue("");
-  }, [selectedIndex]);
+  }, [selectedIndex, agents]);
 
   useInput((input, key) => {
     // Command menu navigation and execution
@@ -96,7 +118,7 @@ export function App() {
       }
     }
 
-    // Arrow keys for option selection
+    // Option selection: arrow keys to navigate, number keys to select, Enter to confirm
     // Exclude meta+arrow which is used for agent navigation in AgentOverview
     if (!showCommandMenu && hasOptions && !key.meta) {
       const currentIndex = selectedOptionId ? optionIds.indexOf(selectedOptionId) : 0;
@@ -108,6 +130,32 @@ export function App() {
       if (key.downArrow) {
         const newIndex = Math.min(optionIds.length - 1, currentIndex + 1);
         setSelectedOptionId(optionIds[newIndex]);
+        return;
+      }
+      // Number keys 1-9 select corresponding option
+      if (/^[1-9]$/.test(input)) {
+        const optionIndex = parseInt(input, 10) - 1;
+        if (optionIndex < optionIds.length) {
+          const targetOptionId = optionIds[optionIndex];
+          const selectedOption = selectedAgent.outputLines.find(
+            (line): line is React.ReactElement =>
+              React.isValidElement(line) &&
+              (line.props as { id?: string }).id === targetOptionId
+          );
+          const optionLabel = selectedOption ? (selectedOption.props as { children?: string }).children || "Selected option" : "Selected option";
+          startWorking(optionLabel);
+          return;
+        }
+      }
+      if (key.return && selectedOptionId) {
+        // Find the selected option's label from outputLines
+        const selectedOption = selectedAgent.outputLines.find(
+          (line): line is React.ReactElement =>
+            React.isValidElement(line) &&
+            (line.props as { id?: string }).id === selectedOptionId
+        );
+        const optionLabel = selectedOption ? (selectedOption.props as { children?: string }).children || "Selected option" : "Selected option";
+        startWorking(optionLabel);
         return;
       }
     }
@@ -153,13 +201,13 @@ export function App() {
       if (key.meta && key.upArrow) {
         setSelectedIndex((i) => Math.max(0, i - 1));
       } else if (key.meta && key.downArrow) {
-        setSelectedIndex((i) => Math.min(mockAgents.length - 1, i + 1));
+        setSelectedIndex((i) => Math.min(agents.length - 1, i + 1));
       }
 
       // Number keys to quick select agent
       if (key.meta && /^[1-9]$/.test(input)) {
         const index = parseInt(input, 10) - 1;
-        if (index < mockAgents.length) {
+        if (index < agents.length) {
           setSelectedIndex(index);
         }
       }
@@ -179,6 +227,9 @@ export function App() {
   };
 
   const handleInputSubmit = () => {
+    if (inputValue.trim()) {
+      startWorking(inputValue.trim());
+    }
     setInputValue("");
   };
 
@@ -202,9 +253,8 @@ export function App() {
           onClear={handleClearInput}
           onSubmit={handleInputSubmit}
           onTab={handleAutocomplete}
-          isActive={true}
+          isActive={selectedAgent.status !== "needs_input"}
           selectedAgent={selectedAgent}
-          suggestion={selectedAgent.suggestion}
         />
         {showCommandMenu ? (
           <CommandMenu
@@ -214,9 +264,9 @@ export function App() {
           />
         ) : (
           <>
-            <StatusBar agents={mockAgents} selectedAgent={selectedAgent} />
+            <StatusBar agents={agents} selectedAgent={selectedAgent} />
             {showAgentOverview && (
-              <AgentOverview agents={mockAgents} selectedIndex={selectedIndex} />
+              <AgentOverview agents={agents} selectedIndex={selectedIndex} />
             )}
           </>
         )}
