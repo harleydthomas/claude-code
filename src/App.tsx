@@ -21,10 +21,14 @@ export function App() {
   const bottomRef = useRef<DOMElement>(null);
   const [bottomHeight, setBottomHeight] = useState(0);
 
-  // Sorted agent indices for cycling: needs_input first, then done, then working
+  // Sorted agent indices for cycling: needs_input first, then done
+  // Working agents are excluded unless all agents are working
   const sortedAgentIndices = useMemo(() => {
+    const hasNonWorkingAgents = agents.some(agent => agent.status !== "working");
+
     return agents
       .map((agent, index) => ({ agent, index }))
+      .filter(item => !hasNonWorkingAgents || item.agent.status !== "working")
       .sort((a, b) => {
         const statusDiff = statusPriority[a.agent.status] - statusPriority[b.agent.status];
         if (statusDiff !== 0) return statusDiff;

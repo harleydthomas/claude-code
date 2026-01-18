@@ -54,7 +54,7 @@ bun start
 | `Shift+Option+A` | Cycle through agents by status |
 | `Ctrl+U` | Clear input |
 | `Enter` | Submit prompt |
-| `q` | Quit |
+| `Ctrl+C` | Quit |
 
 ### Agent Overview
 | Key | Action |
@@ -108,7 +108,7 @@ bun run typecheck # Run TypeScript type checking
 Ink doesn't support CSS-like overflow scrolling, so content is virtualized by slicing the output array and rendering only visible lines. Mouse scroll events are captured via SGR extended mouse mode.
 
 ### Status Priority
-Agents are cycled in priority order: `needs_input` → `done` → `working`. This ensures agents requiring attention are surfaced first.
+Agents are cycled in priority order: `needs_input` → `done`. Working agents are excluded from cycling unless all agents are working. This ensures agents requiring attention are surfaced first.
 
 ### Keyboard-First Design
 All interactions are accessible via keyboard shortcuts, following terminal UI conventions. Mouse scroll is supported as a convenience.

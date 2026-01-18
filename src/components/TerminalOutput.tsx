@@ -14,20 +14,25 @@ export function TerminalOutput({ agent, scrollOffset, viewportHeight, selectedOp
   // Slice the outputLines array to show only the visible portion
   const visibleLines = agent.outputLines.slice(scrollOffset, scrollOffset + viewportHeight);
 
-  // Clone Option elements to pass the selected prop
-  const linesWithSelection = visibleLines.map(line => {
+  // Clone elements to add keys and pass selected prop to Option elements
+  const linesWithKeys = visibleLines.map((line, i) => {
+    const key = scrollOffset + i;
     if (React.isValidElement(line) && line.type === Option) {
       const optionId = (line.props as { id?: string }).id;
       return React.cloneElement(line as React.ReactElement<{ selected?: boolean }>, {
+        key,
         selected: optionId === selectedOptionId,
       });
+    }
+    if (React.isValidElement(line)) {
+      return React.cloneElement(line, { key });
     }
     return line;
   });
 
   return (
     <Box flexDirection="column" flexGrow={1}>
-      {linesWithSelection}
+      {linesWithKeys}
     </Box>
   );
 }
