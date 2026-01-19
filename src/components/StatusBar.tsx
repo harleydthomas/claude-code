@@ -32,7 +32,7 @@ export function StatusBar({ agents = [], selectedAgent }: StatusBarProps) {
       </Box>
       <Spacer />
       <LabeledShortcut hotkey="⌥A">
-        <Text>🤖 <Text color="blue">{selectedAgent.name}</Text></Text>
+        <Text bold>🤖 <Text color="blue">{selectedAgent.name}</Text></Text>
       </LabeledShortcut>
       <Box width={3} />
       <AgentStatusSummary agents={agents} />

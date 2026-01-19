@@ -64,11 +64,13 @@ export function Response({ children }: { children: string }) {
 
 export function Option({ id: _id, index, selected, recommended, description, children }: { id: string; index: number; selected?: boolean; recommended?: boolean; description?: string; children: string }) {
   return (
-    <Text>
-      <Text>{selected ? "❯ " : "  "}</Text>
-      <Text color={selected ? "magenta" : undefined}>{index}. {children}</Text>
-      {recommended && <Text> (Recommended)</Text>}
-      {description && <Text dimColor>  {description}</Text>}
-    </Text>
+    <Box backgroundColor={selected ? "#303030" : undefined}>
+      <Text>
+        <Text>{selected ? "❯ " : "  "}</Text>
+        <Text color={selected ? "magenta" : undefined}>{index}. {children}</Text>
+        {recommended && <Text> (Recommended)</Text>}
+        {description && <Text dimColor>  {description}</Text>}
+      </Text>
+    </Box>
   );
 }
