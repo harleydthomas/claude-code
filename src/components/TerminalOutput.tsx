@@ -31,7 +31,7 @@ export function TerminalOutput({ agent, scrollOffset, viewportHeight, selectedOp
   });
 
   return (
-    <Box flexDirection="column" flexGrow={1}>
+    <Box flexDirection="column" height={viewportHeight}>
       {linesWithKeys}
     </Box>
   );

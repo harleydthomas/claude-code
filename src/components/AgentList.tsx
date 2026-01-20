@@ -20,7 +20,7 @@ export function AgentRow({ agent, index, selectedIndex }: AgentRowProps) {
     <Text inverse={index === selectedIndex}>{agent.name}</Text>
     <Spacer />
     <AgentStatusIndicator status={agent.status} />
-    <Text dimColor>⌥{agent.id}</Text>
+    <Text dimColor>⌥{index}</Text>
   </Box>
 }
 

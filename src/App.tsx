@@ -215,6 +215,21 @@ export function App() {
           setSelectedIndex(index);
         }
       }
+
+      // Option + N to create new agent
+      if (key.meta && input === "n") {
+        const newId = String(Date.now());
+        const newAgent: Agent = {
+          id: newId,
+          name: "New agent",
+          status: "needs_input",
+          tasks: [],
+          outputLines: [],
+        };
+        setAgents(prev => [...prev, newAgent]);
+        setSelectedIndex(agents.length);
+        return;
+      }
     }
   });
 
